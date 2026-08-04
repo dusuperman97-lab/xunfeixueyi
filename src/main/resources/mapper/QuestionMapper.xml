@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.QuestionMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.Question">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="section_id" property="sectionId"/>
+        <result column="question_category" property="questionCategory"/>
+        <result column="test_batch_no" property="testBatchNo"/>
+        <result column="question_type" property="questionType"/>
+        <result column="content" property="content"/>
+        <result column="options" property="options"/>
+        <result column="answer" property="answer"/>
+        <result column="analysis" property="analysis"/>
+        <result column="knowledge_point" property="knowledgePoint"/>
+        <result column="result" property="result"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="queryCourseQuestionsPage" resultMap="BaseResultMap">
+        SELECT q.* FROM question q
+        INNER JOIN section s ON q.section_id = s.id
+        WHERE s.course_id = #{courseId}
+        <if test="questionType != null and questionType != ''">
+            AND q.question_type = #{questionType}
+        </if>
+        ORDER BY q.sort_order ASC, q.create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="queryCourseQuestionsCount" resultType="long">
+        SELECT COUNT(1) FROM question q
+        INNER JOIN section s ON q.section_id = s.id
+        WHERE s.course_id = #{courseId}
+        <if test="questionType != null and questionType != ''">
+            AND q.question_type = #{questionType}
+        </if>
+    </select>
+
+    <select id="queryAllCount" resultType="long">
+        SELECT COUNT(1) FROM question
+    </select>
+
+    <!-- 根据小节ID查询所有题目 -->
+    <select id="selectBySectionId" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE section_id = #{sectionId}
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 批量查询：根据小节ID列表一次性查出所有题目 -->
+    <select id="listBySectionIds" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE section_id IN
+        <foreach collection="sectionIds" item="sectionId" open="(" separator="," close=")">
+            #{sectionId}
+        </foreach>
+        ORDER BY sort_order ASC
+    </select>
+
+    <select id="selectByCourseId" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE course_id = #{courseId}
+        ORDER BY sort_order ASC
+    </select>
+
+    <select id="selectByCourseAndSectionId" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE course_id = #{courseId} and section_id = #{sectionId}
+        <if test="testBatchNo != null and testBatchNo != ''">
+            AND test_batch_no = #{testBatchNo}
+        </if>
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 根据课程ID和题目类别查询题目（用于课程考试） -->
+    <select id="selectByCourseIdAndCategory" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE course_id = #{courseId}
+        AND question_category = #{questionCategory}
+        <if test="testBatchNo != null and testBatchNo != ''">
+            AND test_batch_no = #{testBatchNo}
+        </if>
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 根据题目ID查询题目详情 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据测试批次号查询题目 -->
+    <select id="selectByBatchNo" resultMap="BaseResultMap">
+        SELECT * FROM question
+        WHERE test_batch_no = #{testBatchNo}
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 根据课程ID和题目类别查询最新的 generation batch 题目 -->
+    <select id="selectLatestGenBatchByCourseAndCategory" resultMap="BaseResultMap">
+        SELECT q.* FROM question q
+        INNER JOIN (
+            SELECT test_batch_no
+            FROM question
+            WHERE course_id = #{courseId}
+            AND question_category = #{questionCategory}
+            AND test_batch_no LIKE 'GEN_%'
+            <if test="sectionId != null">
+                AND section_id = #{sectionId}
+            </if>
+            ORDER BY create_time DESC
+            LIMIT 1
+        ) latest ON q.test_batch_no = latest.test_batch_no
+        ORDER BY q.sort_order ASC
+    </select>
+
+    <!-- 根据测试批次号更新题目（将旧 batchNo 的题目迁移到新 batchNo） -->
+    <update id="updateTestBatchNo">
+        UPDATE question
+        SET test_batch_no = #{newBatchNo}
+        WHERE test_batch_no = #{oldBatchNo}
+    </update>
+
+    <!-- 根据题目ID列表批量更新测试批次号（用于回退路径的题目迁移） -->
+    <update id="updateTestBatchNoByIds">
+        UPDATE question
+        SET test_batch_no = #{newBatchNo}
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 批量插入题目 -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question (course_id, section_id, question_category, test_batch_no, question_type, content, options, answer, analysis, knowledge_point, result, sort_order, create_time)
+        VALUES
+        <foreach collection="questions" item="item" separator=",">
+            (
+                #{item.courseId},
+                #{item.sectionId},
+                #{item.questionCategory},
+                #{item.testBatchNo},
+                #{item.questionType},
+                #{item.content},
+                #{item.options},
+                #{item.answer},
+                #{item.analysis},
+                #{item.knowledgePoint},
+                #{item.result},
+                #{item.sortOrder},
+                NOW()
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量更新题目 -->
+    <update id="batchUpdateBySectionId" parameterType="java.util.List">
+        <foreach collection="questions" item="item" separator=";">
+            UPDATE question
+            SET course_id = #{item.courseId},
+                section_id = #{item.sectionId},
+                question_category = #{item.questionCategory},
+                question_type = #{item.questionType},
+                content = #{item.content},
+                options = #{item.options},
+                answer = #{item.answer},
+                analysis = #{item.analysis},
+                knowledge_point = #{item.knowledgePoint},
+                result = #{item.result},
+                sort_order = #{item.sortOrder}
+            WHERE section_id = #{item.sectionId}
+        </foreach>
+    </update>
+
+    <!-- 根据小节ID删除题目 -->
+    <delete id="deleteBySectionId">
+        DELETE FROM question
+               WHERE section_id = #{sectionId}
+    </delete>
+
+</mapper>

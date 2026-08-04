@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.CourseMapper">
+
+    <select id="queryPage" resultType="com.project.platform.entity.Course">
+        SELECT course.*
+        FROM course
+        <include refid="queryConditions"/>
+        ORDER BY course.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT count(course.id) FROM course
+        <include refid="queryConditions"/>
+    </select>
+
+    <sql id="queryConditions">
+        <where>
+            <if test="query.courseName != null and query.courseName.trim() != ''">
+                AND course.course_name LIKE CONCAT('%', #{query.courseName}, '%')
+            </if>
+            <if test="query.creatorId != null">
+                AND course.creator_id = #{query.creatorId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectById" resultType="com.project.platform.entity.Course">
+        SELECT * FROM course WHERE id = #{id}
+    </select>
+
+    <select id="list" resultType="com.project.platform.entity.Course">
+        SELECT * FROM course ORDER BY id DESC
+    </select>
+
+    <select id="listByCreator" resultType="com.project.platform.entity.Course">
+        SELECT * FROM course
+        WHERE creator_id = #{creatorId}
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectByCourseName" resultType="com.project.platform.entity.Course">
+        SELECT * FROM course WHERE course_name = #{courseName} LIMIT 1
+    </select>
+
+
+    <!-- 插入（仅 creator_id） -->
+    <insert id="insert" parameterType="com.project.platform.entity.Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseName != null">course_name,</if>
+            <if test="description != null">description,</if>
+            <if test="chapterCount != null">chapter_count,</if>
+            <if test="creatorId != null">creator_id,</if>
+            <if test="examDuration != null">exam_duration,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseName != null">#{courseName},</if>
+            <if test="description != null">#{description},</if>
+            <if test="chapterCount != null">#{chapterCount},</if>
+            <if test="creatorId != null">#{creatorId},</if>
+            <if test="examDuration != null">#{examDuration},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新（不包含 creator_id） -->
+    <update id="updateById" parameterType="com.project.platform.entity.Course">
+        UPDATE course
+        <set>
+            <if test="courseName != null">
+                course_name = #{courseName},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="chapterCount != null">
+                chapter_count = #{chapterCount},
+            </if>
+            <if test="examDuration != null">
+                exam_duration = #{examDuration},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 批量删除 -->
+    <delete id="removeByIds">
+        DELETE FROM course
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.CourseWorkflowTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.CourseWorkflowTask">
+        <id column="id" property="id"/>
+        <result column="task_id" property="taskId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="current_stage" property="currentStage"/>
+        <result column="request_message" property="requestMessage"/>
+        <result column="course_mode" property="courseMode"/>
+        <result column="difficulty" property="difficulty"/>
+        <result column="title" property="title"/>
+        <result column="subtitle" property="subtitle"/>
+        <result column="summary" property="summary"/>
+        <result column="result_json" property="resultJson"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="finished_at" property="finishedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.project.platform.entity.CourseWorkflowTask" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course_workflow_task (task_id, course_id, user_id, status, current_stage,
+            request_message, course_mode, difficulty, title, subtitle, created_at, updated_at)
+        VALUES (#{taskId}, #{courseId}, #{userId}, #{status}, #{currentStage},
+            #{requestMessage}, #{courseMode}, #{difficulty}, #{title}, #{subtitle}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateById" parameterType="com.project.platform.entity.CourseWorkflowTask">
+        UPDATE course_workflow_task
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="currentStage != null">current_stage = #{currentStage},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="subtitle != null">subtitle = #{subtitle},</if>
+            <if test="summary != null">summary = #{summary},</if>
+            <if test="resultJson != null">result_json = #{resultJson},</if>
+            <if test="courseId != null">course_id = #{courseId},</if>
+            updated_at = #{updatedAt},
+            <if test="finishedAt != null">finished_at = #{finishedAt},</if>
+        </set>
+        WHERE task_id = #{taskId}
+    </update>
+
+    <select id="selectByTaskId" resultMap="BaseResultMap">
+        SELECT * FROM course_workflow_task WHERE task_id = #{taskId}
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM course_workflow_task WHERE user_id = #{userId} ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByCourseId" resultMap="BaseResultMap">
+        SELECT * FROM course_workflow_task WHERE course_id = #{courseId} ORDER BY created_at DESC LIMIT 1
+    </select>
+
+</mapper>

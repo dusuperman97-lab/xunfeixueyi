@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.MemberTierMapper">
+
+    <!-- 查询用户当前等级 -->
+    <select id="selectByUserId" resultType="com.project.platform.entity.MemberTier">
+        SELECT id, user_id, tier_code, total_accumulated_points,
+               current_period_points, period_start_date,
+               upgrade_time, downgrade_time, create_time, update_time
+        FROM mp_member_tier
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 新增用户等级记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.MemberTier"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO mp_member_tier (user_id, tier_code, total_accumulated_points,
+            current_period_points, period_start_date, create_time)
+        VALUES (#{userId}, #{tierCode}, #{totalAccumulatedPoints},
+            #{currentPeriodPoints}, #{periodStartDate}, NOW())
+    </insert>
+
+    <!-- 更新用户等级 -->
+    <update id="updateTier" parameterType="com.project.platform.entity.MemberTier">
+        UPDATE mp_member_tier
+        SET tier_code = #{tierCode},
+            upgrade_time = #{upgradeTime},
+            downgrade_time = #{downgradeTime},
+            update_time = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 累加积分（用于升级判断） -->
+    <update id="incrementAccumulatedPoints">
+        UPDATE mp_member_tier
+        SET total_accumulated_points = total_accumulated_points + #{points},
+            current_period_points = current_period_points + #{points},
+            update_time = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

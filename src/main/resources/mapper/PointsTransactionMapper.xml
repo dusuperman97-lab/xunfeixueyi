@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.PointsTransactionMapper">
+
+    <!-- 新增积分流水 -->
+    <insert id="insert" parameterType="com.project.platform.entity.PointsTransaction"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO points_transaction
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="transactionType != null">transaction_type,</if>
+            <if test="points != null">points,</if>
+            <if test="balanceBefore != null">balance_before,</if>
+            <if test="balanceAfter != null">balance_after,</if>
+            <if test="bizType != null">biz_type,</if>
+            <if test="bizId != null">biz_id,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="transactionType != null">#{transactionType},</if>
+            <if test="points != null">#{points},</if>
+            <if test="balanceBefore != null">#{balanceBefore},</if>
+            <if test="balanceAfter != null">#{balanceAfter},</if>
+            <if test="bizType != null">#{bizType},</if>
+            <if test="bizId != null">#{bizId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 分页查询积分流水 -->
+    <select id="queryPage" resultType="com.project.platform.entity.PointsTransaction">
+        SELECT
+            id,
+            user_id AS userId,
+            transaction_type AS transactionType,
+            points,
+            balance_before AS balanceBefore,
+            balance_after AS balanceAfter,
+            biz_type AS bizType,
+            biz_id AS bizId,
+            description,
+            create_time AS createTime
+        FROM points_transaction
+        <include refid="queryConditions"/>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 查询流水总数 -->
+    <select id="queryCount" resultType="int">
+        SELECT COUNT(id)
+        FROM points_transaction
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 查询条件 -->
+    <sql id="queryConditions">
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="transactionType != null and transactionType.trim() != ''">
+                AND transaction_type = #{transactionType}
+            </if>
+            <if test="bizType != null and bizType.trim() != ''">
+                AND biz_type = #{bizType}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 管理端：分页查询所有积分流水（不限用户，可选用户名筛选） -->
+    <select id="queryAllPage" resultType="com.project.platform.entity.PointsTransaction">
+        SELECT
+            pt.id,
+            pt.user_id AS userId,
+            pt.transaction_type AS transactionType,
+            pt.points,
+            pt.balance_before AS balanceBefore,
+            pt.balance_after AS balanceAfter,
+            pt.biz_type AS bizType,
+            pt.biz_id AS bizId,
+            pt.description,
+            pt.create_time AS createTime
+        FROM points_transaction pt
+        LEFT JOIN student s ON pt.user_id = s.id
+        <where>
+            <if test="username != null and username.trim() != ''">
+                AND s.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="transactionType != null and transactionType.trim() != ''">
+                AND pt.transaction_type = #{transactionType}
+            </if>
+            <if test="bizType != null and bizType.trim() != ''">
+                AND pt.biz_type = #{bizType}
+            </if>
+        </where>
+        ORDER BY pt.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 管理端：查询所有积分流水总数 -->
+    <select id="queryAllCount" resultType="int">
+        SELECT COUNT(pt.id)
+        FROM points_transaction pt
+        LEFT JOIN student s ON pt.user_id = s.id
+        <where>
+            <if test="username != null and username.trim() != ''">
+                AND s.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="transactionType != null and transactionType.trim() != ''">
+                AND pt.transaction_type = #{transactionType}
+            </if>
+            <if test="bizType != null and bizType.trim() != ''">
+                AND pt.biz_type = #{bizType}
+            </if>
+        </where>
+    </select>
+
+</mapper>

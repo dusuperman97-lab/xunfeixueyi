@@ -1,0 +1,102 @@
+/* ── 公共卡片样式，供各子组件 @import 使用 ── */
+
+.profile-card {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 14px;
+  border: 1px solid var(--border-card, #e2e8f0);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  margin-bottom: 24px;
+}
+
+.profile-card:last-child {
+  margin-bottom: 0;
+}
+
+.profile-card-header {
+  background: linear-gradient(135deg, #6272d8, #7b8fe8);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.profile-card-header-icon {
+  font-size: 18px;
+}
+
+.profile-card-header h2,
+.profile-card-header h3 {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.profile-card-body {
+  padding: 16px 18px;
+}
+
+.profile-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  margin-top: 8px;
+  color: var(--blue-primary, #3f51b5);
+  border-left: 4px solid #6272d8;
+  padding-left: 10px;
+}
+
+.profile-section-title:first-of-type {
+  margin-top: 0;
+}
+
+.profile-chart-note {
+  font-size: 10px;
+  color: #64748b;
+  text-align: right;
+  margin-top: -4px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.profile-score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(98, 114, 216, 0.2);
+}
+
+.profile-score-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  backdrop-filter: blur(2px);
+  transition: all 0.2s;
+}
+
+.profile-score-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-1px);
+}
+
+.profile-score-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.profile-score-value {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}

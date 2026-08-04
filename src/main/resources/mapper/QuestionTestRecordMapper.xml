@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.QuestionTestRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.QuestionTestRecord">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="course_id" property="courseId"/>
+        <result column="section_id" property="sectionId"/>
+        <result column="question_id" property="questionId"/>
+        <result column="question_category" property="questionCategory"/>
+        <result column="question_type" property="questionType"/>
+        <result column="content" property="content"/>
+        <result column="knowledge_point" property="knowledgePoint"/>
+        <result column="correct_answer" property="correctAnswer"/>
+        <result column="user_answer" property="userAnswer"/>
+        <result column="is_correct" property="isCorrect"/>
+        <result column="score" property="score"/>
+        <result column="time_spent" property="timeSpent"/>
+        <result column="test_batch_no" property="testBatchNo"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 插入测试记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.QuestionTestRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question_test_record (
+            user_id, course_id, section_id, question_id, question_category, question_type, content, knowledge_point,
+            correct_answer, user_answer, is_correct, score, time_spent, test_batch_no, create_time
+        ) VALUES (
+            #{userId}, #{courseId}, #{sectionId}, #{questionId}, #{questionCategory}, #{questionType}, #{content}, #{knowledgePoint},
+            #{correctAnswer}, #{userAnswer}, #{isCorrect}, #{score}, #{timeSpent}, #{testBatchNo}, NOW()
+        )
+    </insert>
+
+    <!-- 批量插入测试记录 -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO question_test_record (
+            user_id, course_id, section_id, question_id, question_category, question_type, content, knowledge_point,
+            correct_answer, user_answer, is_correct, score, time_spent, test_batch_no, create_time
+        ) VALUES
+        <foreach collection="records" item="item" separator=",">
+            (
+                #{item.userId}, #{item.courseId}, #{item.sectionId}, #{item.questionId}, #{item.questionCategory}, #{item.questionType},
+                #{item.content}, #{item.knowledgePoint}, #{item.correctAnswer}, #{item.userAnswer},
+                #{item.isCorrect}, #{item.score}, #{item.timeSpent}, #{item.testBatchNo}, NOW()
+            )
+        </foreach>
+    </insert>
+
+    <!-- 根据用户ID和小节ID查询测试记录 -->
+    <select id="selectByUserAndSection" resultMap="BaseResultMap">
+        SELECT * FROM question_test_record
+        WHERE user_id = #{userId} AND section_id = #{sectionId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据测试批次号查询测试记录 -->
+    <select id="selectByBatchNo" resultMap="BaseResultMap">
+        SELECT * FROM question_test_record
+        WHERE test_batch_no = #{testBatchNo}
+        ORDER BY question_id ASC
+    </select>
+
+    <!-- 根据知识点统计正确率 -->
+    <select id="selectAccuracyByKnowledgePoint" resultType="java.util.HashMap">
+        SELECT
+            knowledge_point AS knowledgePoint,
+            COUNT(*) AS totalCount,
+            SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS correctCount,
+            SUM(CASE WHEN is_correct = 0 THEN 1 ELSE 0 END) AS wrongCount,
+            ROUND(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS accuracyRate,
+            ROUND(AVG(time_spent), 2) AS avgTimeSpent
+        FROM question_test_record
+        WHERE user_id = #{userId} AND section_id = #{sectionId}
+        GROUP BY knowledge_point
+        ORDER BY accuracyRate ASC
+    </select>
+
+    <!-- 查询用户的测试历史 -->
+    <select id="selectTestHistory" resultType="java.util.HashMap">
+        SELECT
+            test_batch_no AS testBatchNo,
+            section_id AS sectionId,
+            COUNT(*) AS totalQuestions,
+            SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) AS correctQuestions,
+            SUM(CASE WHEN is_correct = 0 THEN 1 ELSE 0 END) AS wrongQuestions,
+            ROUND(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS accuracyRate,
+            MIN(create_time) AS startTime,
+            MAX(create_time) AS endTime
+        FROM question_test_record
+        WHERE user_id = #{userId}
+        <if test="sectionId != null">
+            AND section_id = #{sectionId}
+        </if>
+        GROUP BY test_batch_no, section_id
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询用户的练习情况记录（按测试批次聚合，包含小节名称） -->
+    <select id="selectPracticeRecords" resultType="java.util.HashMap">
+        SELECT
+            s.section_name AS sectionName,
+            SUM(qtr.time_spent) AS totalTimeSpent,
+            MIN(qtr.create_time) AS createTime,
+            ROUND(SUM(CASE WHEN qtr.is_correct = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS accuracyRate
+        FROM question_test_record qtr
+        LEFT JOIN section s ON qtr.section_id = s.id
+        WHERE qtr.user_id = #{userId}
+        GROUP BY qtr.test_batch_no, qtr.section_id, s.section_name
+        ORDER BY qtr.create_time DESC
+    </select>
+
+    <!-- 查询用户的错题记录 -->
+    <select id="selectWrongQuestions" resultMap="BaseResultMap">
+        SELECT * FROM question_test_record
+        WHERE user_id = #{userId} AND is_correct = 0
+        <if test="sectionId != null">
+            AND section_id = #{sectionId}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据测试批次号删除所有记录 -->
+    <delete id="deleteByBatchNo">
+        DELETE FROM question_test_record
+        WHERE test_batch_no = #{testBatchNo}
+    </delete>
+
+    <!-- 根据测试批次号和题目ID列表删除记录 -->
+    <delete id="deleteByBatchNoAndQuestionIds">
+        DELETE FROM question_test_record
+        WHERE test_batch_no = #{testBatchNo}
+        AND question_id IN
+        <foreach collection="questionIds" item="questionId" open="(" separator="," close=")">
+            #{questionId}
+        </foreach>
+    </delete>
+
+</mapper>

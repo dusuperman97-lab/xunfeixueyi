@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.AgentRoleMapper">
+
+    <sql id="Base_Column_List">
+        id, role_code, role_name, stage_id, stage_name, description, accent_color, avatar,
+        sort_order, is_active, created_at, updated_at
+    </sql>
+
+    <select id="queryPage" resultType="com.project.platform.entity.AgentRole">
+        SELECT <include refid="Base_Column_List"/>
+        FROM agent_role
+        <where>
+            <if test="query.roleName != null and query.roleName != ''">
+                AND role_name LIKE CONCAT('%', #{query.roleName}, '%')
+            </if>
+            <if test="query.roleCode != null and query.roleCode != ''">
+                AND role_code = #{query.roleCode}
+            </if>
+            <if test="query.stageId != null and query.stageId != ''">
+                AND stage_id = #{query.stageId}
+            </if>
+            <if test="query.isActive != null and query.isActive != ''">
+                AND is_active = #{query.isActive}
+            </if>
+        </where>
+        ORDER BY sort_order
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT COUNT(*) FROM agent_role
+        <where>
+            <if test="query.roleName != null and query.roleName != ''">
+                AND role_name LIKE CONCAT('%', #{query.roleName}, '%')
+            </if>
+            <if test="query.roleCode != null and query.roleCode != ''">
+                AND role_code = #{query.roleCode}
+            </if>
+            <if test="query.stageId != null and query.stageId != ''">
+                AND stage_id = #{query.stageId}
+            </if>
+            <if test="query.isActive != null and query.isActive != ''">
+                AND is_active = #{query.isActive}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO agent_role (role_code, role_name, stage_id, stage_name, description,
+        accent_color, avatar, sort_order, is_active, created_at, updated_at)
+        VALUES (#{roleCode}, #{roleName}, #{stageId}, #{stageName}, #{description},
+        #{accentColor}, #{avatar}, #{sortOrder}, #{isActive}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="updateById">
+        UPDATE agent_role
+        <set>
+            <if test="roleCode != null and roleCode != ''">
+                role_code = #{roleCode},
+            </if>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="stageId != null">
+                stage_id = #{stageId},
+            </if>
+            <if test="stageName != null">
+                stage_name = #{stageName},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="accentColor != null">
+                accent_color = #{accentColor},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder},
+            </if>
+            <if test="isActive != null">
+                is_active = #{isActive},
+            </if>
+            updated_at = #{updatedAt}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeByIds">
+        DELETE FROM agent_role WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

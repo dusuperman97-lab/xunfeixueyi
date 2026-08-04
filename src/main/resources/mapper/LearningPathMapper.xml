@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.LearningPathMapper">
+
+    <resultMap id="LearningPathMap" type="com.project.platform.entity.LearningPath">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="pathType" column="path_type"/>
+        <result property="major" column="major"/>
+        <result property="pathName" column="path_name"/>
+        <result property="pathContent" column="path_content"/>
+        <result property="aiAnalysis" column="ai_analysis"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.project.platform.entity.LearningPath" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO learning_path (
+            user_id, path_type, major, path_name, path_content, ai_analysis, create_time, update_time
+        ) VALUES (
+            #{userId}, #{pathType}, #{major}, #{pathName}, #{pathContent}, #{aiAnalysis}, NOW(), NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.project.platform.entity.LearningPath">
+        UPDATE learning_path
+        <set>
+            <if test="pathName != null">
+                path_name = #{pathName},
+            </if>
+            <if test="pathContent != null">
+                path_content = #{pathContent},
+            </if>
+            <if test="aiAnalysis != null">
+                ai_analysis = #{aiAnalysis},
+            </if>
+            update_time = NOW(),
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM learning_path WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,285 @@
+server:
+  ip: 43.136.88.189
+  port: 9000
+# CORS跨域配置
+cors:
+  allowed-origins: http://localhost:5173,http://localhost:5175,http://43.136.88.189
+# ============================================================
+# 引入敏感配置文件 application-secret.yml
+# 该文件包含数据库密码、API Key 等敏感信息，已加入 .gitignore
+# 本地开发时需自行创建，参考 application-secret.yml.example
+# ============================================================
+spring:
+  config:
+    import:
+      - optional:classpath:application-secret.yml
+      - optional:file:src/main/resources/application-secret.yml
+
+  main:
+    allow-circular-references: true #允许循环引用
+
+  alioss:
+    endpoint: oss-cn-shenzhen.aliyuncs.com
+    access-key-id: ${ALIOSS_ACCESS_KEY_ID:}
+    bucket-name: aliyun-database
+    access-key-secret: ${ALIOSS_ACCESS_KEY_SECRET:}
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/chat_memory_db}
+
+  # Neo4j 图数据库配置（Spring Boot 3.x 自动配置）
+  neo4j:
+    uri: neo4j://127.0.0.1
+    authentication:
+      username: neo4j
+      password: ${NEO4J_PASSWORD:2024404501}
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.97.153.1:3306/agentpro?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: agentpro
+    password: ${MYSQL_PASSWORD:}
+  servlet:
+    multipart:
+      max-file-size: 0MB # 文件上传大小限制，设置最大值，不能超过该值，否则报错
+      max-request-size: 1000MB # 文件最大请求限制，用于批量上传
+
+  jackson: # Jackson库配置
+    date-format: "yyyy-MM-dd HH:mm:ss" # 设置日期格式为"年-月-日 时:分:秒"
+    serialization:
+      write-dates-as-timestamps: false # 关闭日期序列化为时间戳的功能
+    time-zone: Asia/Shanghai
+  lifecycle:
+    timeout-per-shutdown-phase: 300s  # 将等待时间从 30s 改为 5s
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/course_workflow_schema.sql
+      continue-on-error: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true #启用驼峰命名转换
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印SQL到控制台（已关闭）
+  # logging:
+  #   level: debug # 设置MyBatis的日志级别为DEBUG以打印SQL语句（已关闭）
+resetPassword: ${RESET_PASSWORD:123456}
+spring.main.all-circular-references: true
+
+
+langchain4j:
+  community:
+    dashscope:
+      chat-model:
+        model-name: qwen-plus
+        api-key: ${DASHSCOPE_API_KEY:}
+        timeout: PT5M  # 设置5分钟超时
+        tool-configuration: # ← 添加工具配置
+          disable-parallel-tool-use: true # 禁止并行工具调用，强制串联执行
+      # 要想实现RAG功能，必须要配置这个嵌入式模型
+      embedding-model:
+        model-name: text-embedding-v3
+        api-key: ${DASHSCOPE_API_KEY:}
+        timeout: PT5M  # 设置5分钟超时
+
+      # 流式输出模型
+      streaming-chat-model:
+        model-name: qwen-plus
+        api-key: ${DASHSCOPE_API_KEY:}
+        timeout: PT5M  # 设置5分钟超时
+        tool-configuration:
+          disable-parallel-tool-use: true # 禁止并行工具调用，强制串联执行
+
+  ollama:
+    chat-model:
+      base-url: http://127.0.0.1:11434
+      model-name: qwen3:8b
+      timeout: PT5M
+      log-requests: true
+      log-responses: true
+    embedding-model:
+      base-url: http://127.0.0.1:11434
+      model-name: mxbai-embed-large:latest
+      timeout: PT5M
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: http://127.0.0.1:11434
+      model-name: qwen3:8b
+      timeout: PT5M
+      log-requests: true
+      log-responses: true
+
+    #  openai:
+    #    chat-model:
+    #      api-key: sk-ant-api03-你的Claude-API-Key
+    #      base-url: https://api.anthropic.com
+    #      model-name: claude-3-5-sonnet-20241022
+    #      log-requests: true
+    #      log-responses: true
+    #    streaming-chat-model:
+    #      api-key: sk-ant-api03-你的Claude-API-Key
+    #      base-url: https://api.anthropic.com
+    #      model-name: claude-3-5-sonnet-20241022
+    #      log-requests: true
+    #      log-responses: true
+
+    # OpenAI兼容方式(已注释,改用官方SDK)
+#    chat-model:
+#      base-url: https://spark-api-open.xf-yun.com/v1
+#      api-key: ff36df68bc50f35a650582b6f01b88bb   # 从讯飞开放平台获取
+#      model-name: generalv3.5
+#      log-requests: true
+#      log-responses: true
+#
+#    streaming-chat-model:
+#      base-url: https://spark-api-open.xf-yun.com/v1
+#      api-key: ff36df68bc50f35a650582b6f01b88bb
+#      model-name: generalv3.5
+#      log-requests: true
+#      log-responses: true
+
+# Neo4j 自定义配置（供 Neo4jConfig 使用，避免与 Spring Data Neo4j 自动配置冲突）
+#custom:
+#  neo4j:
+#    url: bolt://47.97.153.1:7687
+#    username: neo4j
+#    password: neo4j1234
+
+# 讯飞星火配置(使用官方SDK)
+spark:
+  app-id: f04b67b3  # 替换为你的应用ID
+  api-key: ${SPARK_API_KEY:}
+  api-secret: ${SPARK_API_SECRET:}
+  domain: generalv3.5  # 模型版本: generalv3.5, generalv3, generalv2等
+
+# 讯飞数字人配置（密钥由 application-secret.yml 提供，仅在此暴露可调参数）
+avatar:
+  ticket-ttl-seconds: ${AVATAR_TICKET_TTL_SECONDS:300}
+
+# 讯飞PPT API配置
+ppt:
+  api:
+    app-id: 25ddeb73  # 从控制台获取，与spark.app-id相同
+    api-secret: ${PPT_API_SECRET:}
+    base-url: https://zwapi.xfyun.cn/api/ppt/v2
+
+
+files:
+  uploads:
+    path: uploads/
+    baseUrl: http://43.136.88.189:9000/file/
+  mindmap:
+    path: uploads/mindmap/
+    baseUrl: http://43.136.88.189:9000/file/mindmap/
+  image:
+    path: uploads/imag/
+    baseUrl: http://43.136.88.189:9000/file/imag/
+  docs:
+    path: src/main/resources/docs/
+  # 图片公网访问地址（大模型需要公网 IP 才能访问）
+  # 本地调试可使用 localhost，部署到云端后务必改为公网 IP
+  imageUrl: http://43.136.88.189:9000/file/
+
+rag:
+  global-knowledge:
+    enabled: false
+    namespace: global-knowledge
+  # 智能分片器配置
+  splitter:
+    chunk-size: 500      # 每个分片的最大字符数
+    overlap: 100         # 相邻分片之间的重叠字符数
+  # Rerank配置（SiliconFlow）
+  rerank:
+    api-key: ${RERANK_API_KEY:}   # 设置环境变量 RERANK_API_KEY 启用
+    model: BAAI/bge-reranker-v2-m3
+    top-n: 3
+
+
+# AI课程生成默认配置
+ai-course:
+  defaults:
+    # 难度级别选项
+    levels:
+      - code: beginner
+        name: 入门级
+        description: 适合零基础学习者
+      - code: intermediate
+        name: 进阶级
+        description: 适合有一定基础的学习者
+      - code: advanced
+        name: 高级
+        description: 适合有丰富经验的学习者
+
+    # 学习周期选项
+    durations:
+      - "7天"
+      - "15天"
+      - "30天"
+      - "60天"
+      - "90天"
+
+    # 教学风格选项
+    styles:
+      - code: project-based
+        name: 项目驱动
+        description: 通过实际项目学习，边做边学
+      - code: theory-based
+        name: 理论导向
+        description: 系统讲解理论知识，夯实基础
+      - code: practice-oriented
+        name: 实践导向
+        description: 大量练习和案例，强化动手能力
+      - code: interview-focused
+        name: 面试突击
+        description: 针对面试重点，快速提升
+
+    # 热门主题推荐
+    popular-topics:
+      - "Java后端开发"
+      - "Python数据分析"
+      - "前端Vue3开发"
+      - "Spring Boot微服务"
+      - "人工智能基础"
+      - "MySQL数据库优化"
+      - "Redis缓存实战"
+      - "Docker容器化部署"
+
+pinecone_key: ${PINECONE_API_KEY:}
+
+# 会员积分系统配置
+member-points:
+  initial-points: 100  # 新用户初始赠送积分
+
+# AI工具积分消耗配置
+points-consumption:
+  course-generation: 10     # 课程生成消耗积分
+  ppt-generation: 10        # PPT生成消耗积分
+  mindmap-generation: 5     # 思维导图生成消耗积分
+  ai-chat: 2                # AI对话消耗积分
+  exam-generation: 5        # 考试题目生成消耗积分
+  content-verification: 3   # 内容真实性校验消耗积分
+
+# 考试时间管理配置
+exam:
+  default-duration: 3600    # 默认考试时长（秒），60分钟
+  auto-save-interval: 30    # 前端自动保存间隔（秒），建议值
+  timeout-check-interval: 30000  # 服务端超时扫描间隔（毫秒）
+
+# 支付宝沙箱支付配置（密钥已移至 application-secret.yml）
+alipay:
+  app-id: 9021000165604715
+  private-key: ${ALIPAY_PRIVATE_KEY:}
+  alipay-public-key: ${ALIPAY_PUBLIC_KEY:}
+  server-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  notify-url: ${ALIPAY_NOTIFY_URL:}
+  return-url: http://localhost:9000/alipay/return
+
+# Neo4j 健康检查
+management:
+  health:
+    neo4j:
+      enabled: true

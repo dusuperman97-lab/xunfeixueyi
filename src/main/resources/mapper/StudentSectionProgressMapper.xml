@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.StudentSectionProgressMapper">
+
+    <select id="selectByKey" resultType="java.util.HashMap">
+        SELECT
+            student_id AS studentId,
+            course_id AS courseId,
+            chapter_id AS chapterId,
+            section_id AS sectionId,
+            content_viewed AS contentViewed,
+            practice_completed AS practiceCompleted,
+            resource_reviewed AS resourceReviewed,
+            completed,
+            mastery_state AS masteryState,
+            last_position AS lastPosition,
+            recommended_next_action AS recommendedNextAction,
+            last_event_time AS lastEventTime,
+            weak_knowledge_points AS weakKnowledgePointsJson
+        FROM student_section_progress
+        WHERE student_id = #{studentId}
+          AND course_id = #{courseId}
+          AND chapter_id = #{chapterId}
+          AND section_id = #{sectionId}
+        LIMIT 1
+    </select>
+
+    <insert id="upsert">
+        INSERT INTO student_section_progress (
+            student_id, course_id, chapter_id, section_id,
+            content_viewed, practice_completed, resource_reviewed, completed,
+            mastery_state, last_position, recommended_next_action,
+            last_event_time, weak_knowledge_points, created_at, updated_at
+        ) VALUES (
+            #{progress.studentId}, #{progress.courseId}, #{progress.chapterId}, #{progress.sectionId},
+            #{progress.contentViewed}, #{progress.practiceCompleted}, #{progress.resourceReviewed}, #{progress.completed},
+            #{progress.masteryState}, #{progress.lastPosition}, #{progress.recommendedNextAction},
+            #{progress.lastEventTime}, #{weakKnowledgePointsJson}, UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000
+        )
+        ON DUPLICATE KEY UPDATE
+            content_viewed = VALUES(content_viewed),
+            practice_completed = VALUES(practice_completed),
+            resource_reviewed = VALUES(resource_reviewed),
+            completed = VALUES(completed),
+            mastery_state = VALUES(mastery_state),
+            last_position = VALUES(last_position),
+            recommended_next_action = VALUES(recommended_next_action),
+            last_event_time = VALUES(last_event_time),
+            weak_knowledge_points = VALUES(weak_knowledge_points),
+            updated_at = VALUES(updated_at)
+    </insert>
+
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.KnowledgeGraphNodeMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.KnowledgeGraphNode">
+        <id column="id" property="id"/>
+        <result column="node_name" property="nodeName"/>
+        <result column="node_type" property="nodeType"/>
+        <result column="node_id" property="nodeId"/>
+        <result column="description" property="description"/>
+        <result column="level" property="level"/>
+        <result column="student_id" property="studentId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 插入节点 -->
+    <insert id="insert" parameterType="com.project.platform.entity.KnowledgeGraphNode" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_graph_node (node_name, node_type, node_id, description, level, student_id)
+        VALUES (#{nodeName}, #{nodeType}, #{nodeId}, #{description}, #{level}, #{studentId})
+    </insert>
+
+    <!-- 批量插入节点 -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_graph_node (node_name, node_type, node_id, description, level, student_id)
+        VALUES
+        <foreach collection="nodes" item="item" separator=",">
+            (#{item.nodeName}, #{item.nodeType}, #{item.nodeId}, #{item.description}, #{item.level}, #{item.studentId})
+        </foreach>
+    </insert>
+
+    <!-- 根据ID查询节点 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_node WHERE id = #{id}
+    </select>
+
+    <!-- 根据节点名称和类型查询 -->
+    <select id="selectByNodeNameAndType" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_node
+        WHERE node_name = #{nodeName} AND node_type = #{nodeType}
+        <if test="studentId != null">
+            AND student_id = #{studentId}
+        </if>
+        LIMIT 1
+    </select>
+
+    <!-- 查询知识图谱的所有节点 -->
+    <select id="selectNodesByGraph" resultMap="BaseResultMap">
+        SELECT DISTINCT n.*
+        FROM knowledge_graph_node n
+        LEFT JOIN knowledge_graph_edge e1 ON n.id = e1.source_node_id
+        LEFT JOIN knowledge_graph_edge e2 ON n.id = e2.target_node_id
+        WHERE (e1.source_node_id IN (
+            SELECT id FROM knowledge_graph_node WHERE node_name = #{centerNodeName}
+            <if test="studentId != null">
+                AND student_id = #{studentId}
+            </if>
+        )
+        OR e2.target_node_id IN (
+            SELECT id FROM knowledge_graph_node WHERE node_name = #{centerNodeName}
+            <if test="studentId != null">
+                AND student_id = #{studentId}
+            </if>
+        )
+        OR n.node_name = #{centerNodeName})
+        <if test="studentId != null">
+            AND n.student_id = #{studentId}
+        </if>
+    </select>
+
+    <!-- 根据学生ID查询所有节点 -->
+    <select id="selectByStudentId" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_node
+        WHERE student_id = #{studentId}
+        ORDER BY level ASC, create_time DESC
+    </select>
+
+    <!-- 根据节点类型查询 -->
+    <select id="selectByNodeType" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_node
+        WHERE node_type = #{nodeType}
+        <if test="studentId != null">
+            AND student_id = #{studentId}
+        </if>
+        ORDER BY level ASC, create_time DESC
+    </select>
+
+    <!-- 更新节点 -->
+    <update id="update" parameterType="com.project.platform.entity.KnowledgeGraphNode">
+        UPDATE knowledge_graph_node
+        <set>
+            <if test="nodeName != null">node_name = #{nodeName},</if>
+            <if test="nodeType != null">node_type = #{nodeType},</if>
+            <if test="nodeId != null">node_id = #{nodeId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="level != null">level = #{level},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除节点 -->
+    <delete id="deleteById">
+        DELETE FROM knowledge_graph_node WHERE id = #{id}
+    </delete>
+
+    <!-- 根据学生ID删除所有节点 -->
+    <delete id="deleteByStudentId">
+        DELETE FROM knowledge_graph_node WHERE student_id = #{studentId}
+    </delete>
+
+</mapper>

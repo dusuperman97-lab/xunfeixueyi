@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.KnowledgeGraphEdgeMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.KnowledgeGraphEdge">
+        <id column="id" property="id"/>
+        <result column="source_node_id" property="sourceNodeId"/>
+        <result column="target_node_id" property="targetNodeId"/>
+        <result column="relationship_type" property="relationshipType"/>
+        <result column="relationship_label" property="relationshipLabel"/>
+        <result column="weight" property="weight"/>
+        <result column="student_id" property="studentId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 插入关系 -->
+    <insert id="insert" parameterType="com.project.platform.entity.KnowledgeGraphEdge" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_graph_edge (source_node_id, target_node_id, relationship_type, relationship_label, weight, student_id)
+        VALUES (#{sourceNodeId}, #{targetNodeId}, #{relationshipType}, #{relationshipLabel}, #{weight}, #{studentId})
+    </insert>
+
+    <!-- 批量插入关系 -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_graph_edge (source_node_id, target_node_id, relationship_type, relationship_label, weight, student_id)
+        VALUES
+        <foreach collection="edges" item="item" separator=",">
+            (#{item.sourceNodeId}, #{item.targetNodeId}, #{item.relationshipType}, #{item.relationshipLabel}, #{item.weight}, #{item.studentId})
+        </foreach>
+    </insert>
+
+    <!-- 根据ID查询关系 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_edge WHERE id = #{id}
+    </select>
+
+    <!-- 查询知识图谱的所有边 -->
+    <select id="selectEdgesByGraph" resultMap="BaseResultMap">
+        SELECT DISTINCT e.*
+        FROM knowledge_graph_edge e
+        INNER JOIN knowledge_graph_node sn ON e.source_node_id = sn.id
+        INNER JOIN knowledge_graph_node tn ON e.target_node_id = tn.id
+        WHERE (sn.node_name = #{centerNodeName} OR tn.node_name = #{centerNodeName})
+        <if test="studentId != null">
+            AND e.student_id = #{studentId}
+        </if>
+    </select>
+
+    <!-- 根据源节点ID查询 -->
+    <select id="selectBySourceNodeId" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_edge
+        WHERE source_node_id = #{sourceNodeId}
+    </select>
+
+    <!-- 根据目标节点ID查询 -->
+    <select id="selectByTargetNodeId" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_graph_edge
+        WHERE target_node_id = #{targetNodeId}
+    </select>
+
+    <!-- 更新关系 -->
+    <update id="update" parameterType="com.project.platform.entity.KnowledgeGraphEdge">
+        UPDATE knowledge_graph_edge
+        <set>
+            <if test="relationshipType != null">relationship_type = #{relationshipType},</if>
+            <if test="relationshipLabel != null">relationship_label = #{relationshipLabel},</if>
+            <if test="weight != null">weight = #{weight},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除关系 -->
+    <delete id="deleteById">
+        DELETE FROM knowledge_graph_edge WHERE id = #{id}
+    </delete>
+
+    <!-- 根据学生ID删除所有关系 -->
+    <delete id="deleteByStudentId">
+        DELETE FROM knowledge_graph_edge WHERE student_id = #{studentId}
+    </delete>
+
+</mapper>

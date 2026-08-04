@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.SectionTestSummaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.SectionTestSummary">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="section_id" property="sectionId"/>
+        <result column="test_name" property="testName"/>
+        <result column="test_batch_no" property="testBatchNo"/>
+        <result column="total_questions" property="totalQuestions"/>
+        <result column="answered_questions" property="answeredQuestions"/>
+        <result column="correct_questions" property="correctQuestions"/>
+        <result column="wrong_questions" property="wrongQuestions"/>
+        <result column="unanswered_questions" property="unansweredQuestions"/>
+        <result column="total_score" property="totalScore"/>
+        <result column="accuracy_rate" property="accuracyRate"/>
+        <result column="avg_time_spent" property="avgTimeSpent"/>
+        <result column="total_time_spent" property="totalTimeSpent"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="deadline" property="deadline"/>
+        <result column="exam_duration" property="examDuration"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 插入测试汇总记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.SectionTestSummary" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO section_test_summary (
+            user_id, section_id,course_id, test_name, test_batch_no, total_questions, answered_questions,
+            correct_questions, wrong_questions, unanswered_questions, total_score,
+            accuracy_rate, avg_time_spent, total_time_spent, start_time, end_time, deadline, exam_duration, status, create_time
+        ) VALUES (
+            #{userId}, #{sectionId},#{courseId},#{testName}, #{testBatchNo}, #{totalQuestions}, #{answeredQuestions},
+            #{correctQuestions}, #{wrongQuestions}, #{unansweredQuestions}, #{totalScore},
+            #{accuracyRate}, #{avgTimeSpent}, #{totalTimeSpent}, #{startTime}, #{endTime},
+            #{deadline}, #{examDuration}, #{status}, NOW()
+        )
+    </insert>
+
+    <!-- 更新测试汇总记录 -->
+    <update id="update" parameterType="com.project.platform.entity.SectionTestSummary">
+        UPDATE section_test_summary
+        SET test_name = #{testName},
+            answered_questions = #{answeredQuestions},
+            course_id = #{courseId},
+            correct_questions = #{correctQuestions},
+            wrong_questions = #{wrongQuestions},
+            unanswered_questions = #{unansweredQuestions},
+            total_score = #{totalScore},
+            accuracy_rate = #{accuracyRate},
+            avg_time_spent = #{avgTimeSpent},
+            total_time_spent = #{totalTimeSpent},
+            end_time = #{endTime},
+            status = #{status},
+            update_time = NOW()
+        WHERE user_id = #{userId} AND section_id = #{sectionId} AND test_batch_no = #{testBatchNo}
+    </update>
+
+    <!-- 根据用户ID和小节ID查询测试汇总 -->
+    <select id="selectByUserAndSection" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId} AND section_id = #{sectionId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByUserAndCourse" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId} AND course_id = #{courseId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据测试批次号查询测试汇总 -->
+    <select id="selectByBatchNo" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE test_batch_no = #{testBatchNo}
+        LIMIT 1
+    </select>
+
+    <!-- 查询用户的测试历史汇总 -->
+    <select id="selectTestHistory" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据用户ID和小节ID查询随堂测试历史(按批次号分组) -->
+    <select id="selectSectionTestHistory" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId}
+          AND section_id = #{sectionId}
+          AND test_batch_no LIKE 'PRACTICE_%'
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据用户ID和课程ID查询课程考试历史(按批次号分组) -->
+    <select id="selectCourseExamHistory" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId}
+          AND course_id = #{courseId}
+          AND test_batch_no LIKE '%EXAM_%'
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询已过期但仍在进行中的考试会话（用于定时自动交卷） -->
+    <select id="selectExpiredInProgress" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE status = 'IN_PROGRESS'
+          AND deadline IS NOT NULL
+          AND deadline &lt; NOW()
+    </select>
+
+    <!-- 根据用户ID和课程ID查询进行中的考试会话 -->
+    <select id="selectInProgressByUserAndCourse" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId}
+          AND course_id = #{courseId}
+          AND status = 'IN_PROGRESS'
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <!-- 根据用户ID和小节ID查询进行中的考试会话 -->
+    <select id="selectInProgressByUserAndSection" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId}
+          AND section_id = #{sectionId}
+          AND status = 'IN_PROGRESS'
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <!-- 根据主键ID查询测试汇总 -->
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary WHERE id = #{id}
+    </select>
+
+    <!-- 查询用户所有已完成的测试汇总 -->
+    <select id="selectCompletedByUser" resultMap="BaseResultMap">
+        SELECT * FROM section_test_summary
+        WHERE user_id = #{userId}
+          AND status IN ('COMPLETED', 'AUTO_SUBMITTED')
+        ORDER BY start_time ASC
+    </select>
+
+    <!-- 查询用户测试活跃时段分布（按小时统计） -->
+    <select id="selectHourDistributionByUser" resultType="java.util.HashMap">
+        SELECT HOUR(start_time) AS hour, COUNT(*) AS cnt
+        FROM section_test_summary
+        WHERE user_id = #{userId}
+          AND start_time IS NOT NULL
+        GROUP BY HOUR(start_time)
+        ORDER BY hour
+    </select>
+
+    <!-- 更新考试会话状态为自动交卷 -->
+    <update id="updateStatusToAutoSubmitted">
+        UPDATE section_test_summary
+        SET status = 'AUTO_SUBMITTED',
+            end_time = #{endTime},
+            total_time_spent = #{totalTimeSpent},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

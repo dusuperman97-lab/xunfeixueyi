@@ -1,0 +1,70 @@
+{
+  "message": "## 从零开始，构建你的 AI 知识体系\n\n人工智能并非遥不可及——它更像一门**分层递进的手艺**。下面这份学习地图从「理解概念 → 掌握工具 → 动手实战」三阶段出发，为你挑选了一组高质量、零门槛的入门资源，覆盖 **架构认知、视频精讲、深度阅读** 三种学习方式。\n\n> 建议路径：先花 3 分钟浏览架构图建立全局观 → 再跟随 B 站实战教程跑通第一个模型 → 最后按需精读下方三篇精选文章，补足理论深度。\n\n---\n\n### 你将收获\n- 一张图看懂 AI 技术全景，不再迷失在术语海洋\n- 一套完整的零基础→实战视频课程，边看边练\n- 三份来自 **GitHub / AWS / NVIDIA** 的权威入门指南，覆盖理论、工具与产业视角",
+  "resources": {
+    "images": [
+      {
+        "url": "https://img2.baidu.com/it/u=568520845,4265312505&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500",
+        "title": "人工智能技术全景架构图 —— 从数据层到应用层一图打尽",
+        "source": "Pixabay / 百度图库",
+        "description": "涵盖基础数据层、模型训练层、推理部署层、应用场景层四大模块，适合入门阶段建立全局认知。"
+      }
+    ],
+    "videos": [
+      {
+        "url": "https://www.bilibili.com/video/BV1QK41zFETe",
+        "title": "【AI 零基础】人工智能入门全攻略 —— 从理论到实战一条龙",
+        "duration": "约 6 小时",
+        "source": "B站",
+        "description": "面向完全零基础的 AI 入门实战课。内容覆盖：Python 环境搭建、NumPy/Pandas 数据处理、机器学习经典算法、神经网络基础、PyTorch 入门项目。每个模块均配套 Jupyter Notebook 可运行代码。"
+      },
+      {
+        "url": "https://www.bilibili.com/video/BV1vW4y1j7nB",
+        "title": "李宏毅 2024 机器学习 —— 台大电气系官方课程实录",
+        "duration": "约 40 小时",
+        "source": "B站",
+        "description": "台大李宏毅教授年度课程，中文授课天花板。从回归、分类到 Transformer 与大语言模型，深入浅出，每讲附 Homework 实战。"
+      },
+      {
+        "url": "https://www.bilibili.com/video/BV1zA4m1u7t1",
+        "title": "吴恩达《AI For Everyone》中文精译版 —— 非技术岗的 AI 必修课",
+        "duration": "约 4 小时",
+        "source": "B站",
+        "description": "吴恩达专为非技术人员打造的 AI 通识课，中文精译。不写代码也能理解 AI 能做什么、不能做什么、如何落地。"
+      }
+    ],
+    "articles": [
+      {
+        "url": "https://github.com/yeasy/ai_beginner_guide",
+        "title": "GitHub 万星项目：普通人看的 AI 入门指南",
+        "source": "GitHub",
+        "snippet": "面向完全零基础的读者，从「什么是 AI」出发，逐步走向大语言模型原理与提示工程实践。涵盖 LLM 工作原理、常见工具（ChatGPT / Claude / DeepSeek）注册与使用、Prompt 编写技巧、本地模型部署入门等。CC BY-NC-SA 4.0 开源协议，可自由分发。",
+        "difficulty": "入门",
+        "readTime": "约 2 小时"
+      },
+      {
+        "url": "https://aws.amazon.com/cn/ai/learn/new-to-ai",
+        "title": "AWS 官方 AI 学习路径 —— 从零基础到生成式 AI 实战",
+        "source": "AWS",
+        "snippet": "AWS 官方出品的结构化课程体系，按学习者角色（业务决策者 / 开发者 / 数据科学家）分路径设计。核心模块包括：机器学习简介、生成式 AI 基础、Amazon Bedrock 实操、提示工程进阶。含免费动手实验室，无需自建环境即可在 AWS 控制台完成模型推理。",
+        "difficulty": "入门→进阶",
+        "readTime": "约 8 小时（含实验）"
+      },
+      {
+        "url": "https://www.nvidia.cn/learn/ai-learning-essentials",
+        "title": "NVIDIA 深度学习中文课程 —— GPU 加速与 RAG 实战",
+        "source": "NVIDIA",
+        "snippet": "英伟达官方中文学习中心，核心课程：生成式 AI 入门（Transformer 架构解析）、RAG 检索增强生成入门（向量数据库 + LangChain）、深度学习新手入门（CNN/RNN 原理与 TensorRT 加速）。完成课程可获得 NVIDIA DLI 官方证书，适合有一定编程基础的学习者。",
+        "difficulty": "初中级",
+        "readTime": "约 12 小时"
+      },
+      {
+        "url": "https://github.com/microsoft/AI-For-Beginners",
+        "title": "微软 AI For Beginners —— 12 周系统课程，从理论到部署",
+        "source": "GitHub",
+        "snippet": "微软官方开源课程，12 周 24 课时，覆盖：AI 历史与伦理、神经网络与深度学习、计算机视觉、NLP 与 LLM、AI Agent 设计模式。每课含 Markdown 讲义 + Jupyter Notebook 实验 + 课后测验，适合想系统学习的高校学生与转行工程师。",
+        "difficulty": "初中级",
+        "readTime": "12 周（建议每周 4-6 小时）"
+      }
+    ]
+  }
+}

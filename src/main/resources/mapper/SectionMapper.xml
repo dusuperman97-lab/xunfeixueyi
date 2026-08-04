@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.SectionMapper">
+
+    <select id="queryPage" resultType="com.project.platform.entity.Section">
+        SELECT section.*
+        FROM section
+        <include refid="queryConditions"/>
+        ORDER BY section.sort_order ASC, section.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT count(section.id) FROM section
+        <include refid="queryConditions"/>
+    </select>
+
+    <sql id="queryConditions">
+        <where>
+            <if test="query.chapterId != null">
+                AND section.chapter_id = #{query.chapterId}
+            </if>
+            <if test="query.sectionName != null and query.sectionName.trim() != ''">
+                AND section.section_name LIKE CONCAT('%', #{query.sectionName}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectById" resultType="com.project.platform.entity.Section">
+        SELECT * FROM section WHERE id = #{id}
+    </select>
+
+    <select id="listByChapterId" resultType="com.project.platform.entity.Section">
+        SELECT * FROM section
+        WHERE chapter_id = #{chapterId}
+        ORDER BY sort_order ASC, id DESC
+    </select>
+
+    <select id="listByChapterIds" resultType="com.project.platform.entity.Section">
+        SELECT * FROM section
+        WHERE chapter_id IN
+        <foreach collection="chapterIds" item="chapterId" open="(" separator="," close=")">
+            #{chapterId}
+        </foreach>
+        ORDER BY sort_order ASC, id DESC
+    </select>
+
+    <select id="selectByChapterIdAndName" resultType="com.project.platform.entity.Section">
+        SELECT * FROM section
+        WHERE chapter_id = #{chapterId} AND section_name = #{sectionName}
+        LIMIT 1
+    </select>
+
+    <!-- 插入（包含 content_url） -->
+    <insert id="insert" parameterType="com.project.platform.entity.Section" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO section
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chapterId != null">chapter_id,</if>
+            <if test="sectionName != null">section_name,</if>
+            <if test="videoUrl != null">video_url,</if>
+            <if test="imagUrl != null">imag_url,</if>
+            <if test="contentUrl != null">content_url,</if>
+            <if test="duration != null">duration,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="isCompleted != null">is_completed,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="chapterId != null">#{chapterId},</if>
+            <if test="sectionName != null">#{sectionName},</if>
+            <if test="videoUrl != null">#{videoUrl},</if>
+            <if test="imagUrl != null">#{imagUrl},</if>
+            <if test="contentUrl != null">#{contentUrl},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="isCompleted != null">#{isCompleted},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新（包含 content_url） -->
+    <update id="updateById" parameterType="com.project.platform.entity.Section">
+        UPDATE section
+        <set>
+            <if test="chapterId != null">
+                chapter_id = #{chapterId},
+            </if>
+            <if test="sectionName != null">
+                section_name = #{sectionName},
+            </if>
+            <if test="videoUrl != null">
+                video_url = #{videoUrl},
+            </if>
+            <if test="imagUrl != null">
+                imag_url = #{imagUrl},
+            </if>
+            <if test="contentUrl != null">
+                content_url = #{contentUrl},
+            </if>
+            <if test="duration != null">
+                duration = #{duration},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder},
+            </if>
+            <if test="isCompleted != null">
+                is_completed = #{isCompleted},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 批量删除 -->
+    <delete id="removeByIds">
+        DELETE FROM section
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 根据章节ID删除（级联删除用） -->
+    <delete id="removeByChapterId">
+        DELETE FROM section WHERE chapter_id = #{chapterId}
+    </delete>
+</mapper>

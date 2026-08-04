@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.AiToolUsageMapper">
+
+    <!-- 插入AI工具使用情况记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.AiToolUsage"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ai_tool_usage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="chatUsageCount != null">chat_usage_count,</if>
+            <if test="pptUsageCount != null">ppt_usage_count,</if>
+            <if test="mindmapUsageCount != null">mindmap_usage_count,</if>
+            <if test="resourceRecommendUsageCount != null">resource_recommend_usage_count,</if>
+            <if test="immersiveCourseUsageCount != null">immersive_course_usage_count,</if>
+            <if test="virtualTeacherUsageCount != null">virtual_teacher_usage_count,</if>
+            <if test="chatDurationMinutes != null">chat_duration_minutes,</if>
+            <if test="pptDurationMinutes != null">ppt_duration_minutes,</if>
+            <if test="mindmapDurationMinutes != null">mindmap_duration_minutes,</if>
+            <if test="resourceDurationMinutes != null">resource_duration_minutes,</if>
+            <if test="courseDurationMinutes != null">course_duration_minutes,</if>
+            <if test="teacherDurationMinutes != null">teacher_duration_minutes,</if>
+            <if test="totalUsageCount != null">total_usage_count,</if>
+            <if test="totalDurationMinutes != null">total_duration_minutes,</if>
+            <if test="avgDailyUsageCount != null">avg_daily_usage_count,</if>
+            <if test="avgSessionDurationMinutes != null">avg_session_duration_minutes,</if>
+            <if test="lastChatTime != null">last_chat_time,</if>
+            <if test="lastPptTime != null">last_ppt_time,</if>
+            <if test="lastMindmapTime != null">last_mindmap_time,</if>
+            <if test="lastResourceTime != null">last_resource_time,</if>
+            <if test="lastCourseTime != null">last_course_time,</if>
+            <if test="lastTeacherTime != null">last_teacher_time,</if>
+            <if test="lastUsageTime != null">last_usage_time,</if>
+            <if test="mostUsedTool != null">most_used_tool,</if>
+            <if test="usagePattern != null">usage_pattern,</if>
+            <if test="learningStyleByAI != null">learning_style_by_ai,</if>
+            <if test="engagementScore != null">engagement_score,</if>
+            <if test="toolMasteryLevel != null">tool_mastery_level,</if>
+            <if test="aiLearningEfficiency != null">ai_learning_efficiency,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="chatUsageCount != null">#{chatUsageCount},</if>
+            <if test="pptUsageCount != null">#{pptUsageCount},</if>
+            <if test="mindmapUsageCount != null">#{mindmapUsageCount},</if>
+            <if test="resourceRecommendUsageCount != null">#{resourceRecommendUsageCount},</if>
+            <if test="immersiveCourseUsageCount != null">#{immersiveCourseUsageCount},</if>
+            <if test="virtualTeacherUsageCount != null">#{virtualTeacherUsageCount},</if>
+            <if test="chatDurationMinutes != null">#{chatDurationMinutes},</if>
+            <if test="pptDurationMinutes != null">#{pptDurationMinutes},</if>
+            <if test="mindmapDurationMinutes != null">#{mindmapDurationMinutes},</if>
+            <if test="resourceDurationMinutes != null">#{resourceDurationMinutes},</if>
+            <if test="courseDurationMinutes != null">#{courseDurationMinutes},</if>
+            <if test="teacherDurationMinutes != null">#{teacherDurationMinutes},</if>
+            <if test="totalUsageCount != null">#{totalUsageCount},</if>
+            <if test="totalDurationMinutes != null">#{totalDurationMinutes},</if>
+            <if test="avgDailyUsageCount != null">#{avgDailyUsageCount},</if>
+            <if test="avgSessionDurationMinutes != null">#{avgSessionDurationMinutes},</if>
+            <if test="lastChatTime != null">#{lastChatTime},</if>
+            <if test="lastPptTime != null">#{lastPptTime},</if>
+            <if test="lastMindmapTime != null">#{lastMindmapTime},</if>
+            <if test="lastResourceTime != null">#{lastResourceTime},</if>
+            <if test="lastCourseTime != null">#{lastCourseTime},</if>
+            <if test="lastTeacherTime != null">#{lastTeacherTime},</if>
+            <if test="lastUsageTime != null">#{lastUsageTime},</if>
+            <if test="mostUsedTool != null">#{mostUsedTool},</if>
+            <if test="usagePattern != null">#{usagePattern},</if>
+            <if test="learningStyleByAI != null">#{learningStyleByAI},</if>
+            <if test="engagementScore != null">#{engagementScore},</if>
+            <if test="toolMasteryLevel != null">#{toolMasteryLevel},</if>
+            <if test="aiLearningEfficiency != null">#{aiLearningEfficiency},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新AI工具使用情况记录 -->
+    <update id="updateById" parameterType="com.project.platform.entity.AiToolUsage">
+        UPDATE ai_tool_usage
+        <set>
+            <if test="chatUsageCount != null">
+                chat_usage_count = #{chatUsageCount},
+            </if>
+            <if test="pptUsageCount != null">
+                ppt_usage_count = #{pptUsageCount},
+            </if>
+            <if test="mindmapUsageCount != null">
+                mindmap_usage_count = #{mindmapUsageCount},
+            </if>
+            <if test="resourceRecommendUsageCount != null">
+                resource_recommend_usage_count = #{resourceRecommendUsageCount},
+            </if>
+            <if test="immersiveCourseUsageCount != null">
+                immersive_course_usage_count = #{immersiveCourseUsageCount},
+            </if>
+            <if test="virtualTeacherUsageCount != null">
+                virtual_teacher_usage_count = #{virtualTeacherUsageCount},
+            </if>
+            <if test="chatDurationMinutes != null">
+                chat_duration_minutes = #{chatDurationMinutes},
+            </if>
+            <if test="pptDurationMinutes != null">
+                ppt_duration_minutes = #{pptDurationMinutes},
+            </if>
+            <if test="mindmapDurationMinutes != null">
+                mindmap_duration_minutes = #{mindmapDurationMinutes},
+            </if>
+            <if test="resourceDurationMinutes != null">
+                resource_duration_minutes = #{resourceDurationMinutes},
+            </if>
+            <if test="courseDurationMinutes != null">
+                course_duration_minutes = #{courseDurationMinutes},
+            </if>
+            <if test="teacherDurationMinutes != null">
+                teacher_duration_minutes = #{teacherDurationMinutes},
+            </if>
+            <if test="totalUsageCount != null">
+                total_usage_count = #{totalUsageCount},
+            </if>
+            <if test="totalDurationMinutes != null">
+                total_duration_minutes = #{totalDurationMinutes},
+            </if>
+            <if test="avgDailyUsageCount != null">
+                avg_daily_usage_count = #{avgDailyUsageCount},
+            </if>
+            <if test="avgSessionDurationMinutes != null">
+                avg_session_duration_minutes = #{avgSessionDurationMinutes},
+            </if>
+            <if test="lastChatTime != null">
+                last_chat_time = #{lastChatTime},
+            </if>
+            <if test="lastPptTime != null">
+                last_ppt_time = #{lastPptTime},
+            </if>
+            <if test="lastMindmapTime != null">
+                last_mindmap_time = #{lastMindmapTime},
+            </if>
+            <if test="lastResourceTime != null">
+                last_resource_time = #{lastResourceTime},
+            </if>
+            <if test="lastCourseTime != null">
+                last_course_time = #{lastCourseTime},
+            </if>
+            <if test="lastTeacherTime != null">
+                last_teacher_time = #{lastTeacherTime},
+            </if>
+            <if test="lastUsageTime != null">
+                last_usage_time = #{lastUsageTime},
+            </if>
+            <if test="mostUsedTool != null">
+                most_used_tool = #{mostUsedTool},
+            </if>
+            <if test="usagePattern != null">
+                usage_pattern = #{usagePattern},
+            </if>
+            <if test="learningStyleByAI != null">
+                learning_style_by_ai = #{learningStyleByAI},
+            </if>
+            <if test="engagementScore != null">
+                engagement_score = #{engagementScore},
+            </if>
+            <if test="toolMasteryLevel != null">
+                tool_mastery_level = #{toolMasteryLevel},
+            </if>
+            <if test="aiLearningEfficiency != null">
+                ai_learning_efficiency = #{aiLearningEfficiency},
+            </if>
+            update_time = NOW(),
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除AI工具使用情况记录 -->
+    <delete id="deleteByUserId">
+        DELETE FROM ai_tool_usage WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

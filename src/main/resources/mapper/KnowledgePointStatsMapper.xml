@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.KnowledgePointStatsMapper">
+    
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.KnowledgePointStats">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="section_id" property="sectionId"/>
+        <result column="knowledge_point" property="knowledgePoint"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="correct_count" property="correctCount"/>
+        <result column="wrong_count" property="wrongCount"/>
+        <result column="accuracy_rate" property="accuracyRate"/>
+        <result column="avg_time_spent" property="avgTimeSpent"/>
+        <result column="last_test_time" property="lastTestTime"/>
+        <result column="mastery_level" property="masteryLevel"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    
+    <!-- 插入或更新知识点统计（使用ON DUPLICATE KEY UPDATE） -->
+    <insert id="upsert" parameterType="com.project.platform.entity.KnowledgePointStats">
+        INSERT INTO knowledge_point_stats (
+            user_id, section_id, knowledge_point, total_count, correct_count, wrong_count,
+            accuracy_rate, avg_time_spent, last_test_time, mastery_level, update_time
+        ) VALUES (
+            #{userId}, #{sectionId}, #{knowledgePoint}, #{totalCount}, #{correctCount}, #{wrongCount},
+            #{accuracyRate}, #{avgTimeSpent}, #{lastTestTime}, #{masteryLevel}, NOW()
+        )
+        ON DUPLICATE KEY UPDATE
+            total_count = VALUES(total_count),
+            correct_count = VALUES(correct_count),
+            wrong_count = VALUES(wrong_count),
+            accuracy_rate = VALUES(accuracy_rate),
+            avg_time_spent = VALUES(avg_time_spent),
+            last_test_time = VALUES(last_test_time),
+            mastery_level = VALUES(mastery_level),
+            update_time = NOW()
+    </insert>
+    
+    <!-- 根据用户ID和小节ID查询知识点统计 -->
+    <select id="selectByUserAndSection" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_point_stats
+        WHERE user_id = #{userId} AND section_id = #{sectionId}
+        ORDER BY accuracy_rate ASC
+    </select>
+    
+    <!-- 根据用户ID查询所有知识点统计 -->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_point_stats
+        WHERE user_id = #{userId}
+        ORDER BY section_id, accuracy_rate ASC
+    </select>
+    
+    <!-- 根据掌握程度查询知识点 -->
+    <select id="selectByMasteryLevel" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_point_stats
+        WHERE user_id = #{userId} AND mastery_level = #{masteryLevel}
+        ORDER BY accuracy_rate DESC
+    </select>
+    
+</mapper>

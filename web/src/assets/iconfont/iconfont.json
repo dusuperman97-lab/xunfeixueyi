@@ -1,0 +1,275 @@
+{
+  "id": "5153600",
+  "name": "素材",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4719752",
+      "name": "会员卡",
+      "font_class": "huiyuanqia",
+      "unicode": "e6b0",
+      "unicode_decimal": 59056
+    },
+    {
+      "icon_id": "1469225",
+      "name": "github",
+      "font_class": "github",
+      "unicode": "e85a",
+      "unicode_decimal": 59482
+    },
+    {
+      "icon_id": "24934032",
+      "name": "bilibili",
+      "font_class": "bilibili-copy",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "37946199",
+      "name": "知乎",
+      "font_class": "zhihu",
+      "unicode": "eb80",
+      "unicode_decimal": 60288
+    },
+    {
+      "icon_id": "46039922",
+      "name": "知网",
+      "font_class": "zhiwang",
+      "unicode": "e744",
+      "unicode_decimal": 59204
+    },
+    {
+      "icon_id": "43463600",
+      "name": "知识图谱",
+      "font_class": "zhishitupu",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "10425938",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "40891455",
+      "name": "虚拟人",
+      "font_class": "futuro_icons_428",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "7831433",
+      "name": "附件",
+      "font_class": "fujian",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "45883456",
+      "name": "通义",
+      "font_class": "tongyi",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "3716174",
+      "name": "图片",
+      "font_class": "tupian",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "5483235",
+      "name": "视频",
+      "font_class": "shipin",
+      "unicode": "e6c1",
+      "unicode_decimal": 59073
+    },
+    {
+      "icon_id": "5700450",
+      "name": "思维导图",
+      "font_class": "shezhi",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "23949513",
+      "name": "文章",
+      "font_class": "wenzhang",
+      "unicode": "ec64",
+      "unicode_decimal": 60516
+    },
+    {
+      "icon_id": "27474355",
+      "name": "学习资源",
+      "font_class": "icon_home_learningresources",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "39396736",
+      "name": "讯飞星火-copy",
+      "font_class": "xunfeichatgpt",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "45089024",
+      "name": "千文",
+      "font_class": "qianwen",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "4031008",
+      "name": "ppt",
+      "font_class": "ppt",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "4628503",
+      "name": "PPT",
+      "font_class": "PPT",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "25447651",
+      "name": "合_38题库管理",
+      "font_class": "he_38tikuguanli",
+      "unicode": "e711",
+      "unicode_decimal": 59153
+    },
+    {
+      "icon_id": "37857817",
+      "name": "资源推送",
+      "font_class": "ziyuantuisong",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "3593636",
+      "name": "资源",
+      "font_class": "ziyuan",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "5944690",
+      "name": "学习路径",
+      "font_class": "xuexilujing",
+      "unicode": "e6a3",
+      "unicode_decimal": 59043
+    },
+    {
+      "icon_id": "7946337",
+      "name": "资源",
+      "font_class": "ziyuan1",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "24652850",
+      "name": "资源",
+      "font_class": "ziyuan2",
+      "unicode": "e6f7",
+      "unicode_decimal": 59127
+    },
+    {
+      "icon_id": "26212706",
+      "name": "效果评估",
+      "font_class": "xiaoguopinggu",
+      "unicode": "e72f",
+      "unicode_decimal": 59183
+    },
+    {
+      "icon_id": "26213719",
+      "name": "效果评估",
+      "font_class": "xiaoguopinggu1",
+      "unicode": "e730",
+      "unicode_decimal": 59184
+    },
+    {
+      "icon_id": "44871154",
+      "name": "智能辅导",
+      "font_class": "zhinengfudao",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "44384559",
+      "name": "知识库-当前知识库",
+      "font_class": "zhishiku-dangqianzhishiku",
+      "unicode": "e6dd",
+      "unicode_decimal": 59101
+    },
+    {
+      "icon_id": "3886597",
+      "name": "智能云",
+      "font_class": "zhinengyun",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "35540267",
+      "name": "智能 (18)",
+      "font_class": "a-zhineng18",
+      "unicode": "eb39",
+      "unicode_decimal": 60217
+    },
+    {
+      "icon_id": "36285081",
+      "name": "智能门禁",
+      "font_class": "zhinengmenjin",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "42363996",
+      "name": "智能 (11)",
+      "font_class": "a-zhineng11",
+      "unicode": "e8ac",
+      "unicode_decimal": 59564
+    },
+    {
+      "icon_id": "145704",
+      "name": "分类or广场or其他_填充",
+      "font_class": "fenleiorguangchangorqitatianchong",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "2611787",
+      "name": "画像分析",
+      "font_class": "huaxiangfenxi",
+      "unicode": "e73c",
+      "unicode_decimal": 59196
+    },
+    {
+      "icon_id": "3886595",
+      "name": "用户画像",
+      "font_class": "yonghuhuaxiang",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "23273799",
+      "name": "党建_党建知识库",
+      "font_class": "dangjian_dangjianzhishiku",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "44424423",
+      "name": "智能体",
+      "font_class": "zhinengti",
+      "unicode": "e7d3",
+      "unicode_decimal": 59347
+    }
+  ]
+}

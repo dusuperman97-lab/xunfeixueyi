@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.KnowledgePointSourceMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.KnowledgePointSource">
+        <id column="id" property="id"/>
+        <result column="knowledge_point" property="knowledgePoint"/>
+        <result column="source_type" property="sourceType"/>
+        <result column="source_id" property="sourceId"/>
+        <result column="source_name" property="sourceName"/>
+        <result column="content_snippet" property="contentSnippet"/>
+        <result column="page_number" property="pageNumber"/>
+        <result column="confidence" property="confidence"/>
+        <result column="student_id" property="studentId"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 插入来源记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.KnowledgePointSource" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_point_source (knowledge_point, source_type, source_id, source_name, content_snippet, page_number, confidence, student_id)
+        VALUES (#{knowledgePoint}, #{sourceType}, #{sourceId}, #{sourceName}, #{contentSnippet}, #{pageNumber}, #{confidence}, #{studentId})
+    </insert>
+
+    <!-- 批量插入来源记录 -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO knowledge_point_source (knowledge_point, source_type, source_id, source_name, content_snippet, page_number, confidence, student_id)
+        VALUES
+        <foreach collection="sources" item="item" separator=",">
+            (#{item.knowledgePoint}, #{item.sourceType}, #{item.sourceId}, #{item.sourceName}, #{item.contentSnippet}, #{item.pageNumber}, #{item.confidence}, #{item.studentId})
+        </foreach>
+    </insert>
+
+    <!-- 根据知识点名称查询来源 -->
+    <select id="selectByKnowledgePoint" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_point_source
+        WHERE knowledge_point = #{knowledgePoint}
+        <if test="studentId != null">
+            AND student_id = #{studentId}
+        </if>
+        ORDER BY confidence DESC, create_time DESC
+    </select>
+
+    <!-- 根据学生ID查询所有来源 -->
+    <select id="selectByStudentId" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_point_source
+        WHERE student_id = #{studentId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据来源类型和ID查询 -->
+    <select id="selectBySource" resultMap="BaseResultMap">
+        SELECT * FROM knowledge_point_source
+        WHERE source_type = #{sourceType} AND source_id = #{sourceId}
+        <if test="studentId != null">
+            AND student_id = #{studentId}
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 更新来源记录 -->
+    <update id="update" parameterType="com.project.platform.entity.KnowledgePointSource">
+        UPDATE knowledge_point_source
+        <set>
+            <if test="contentSnippet != null">content_snippet = #{contentSnippet},</if>
+            <if test="pageNumber != null">page_number = #{pageNumber},</if>
+            <if test="confidence != null">confidence = #{confidence},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除来源记录 -->
+    <delete id="deleteById">
+        DELETE FROM knowledge_point_source WHERE id = #{id}
+    </delete>
+
+    <!-- 根据学生ID删除所有来源 -->
+    <delete id="deleteByStudentId">
+        DELETE FROM knowledge_point_source WHERE student_id = #{studentId}
+    </delete>
+
+</mapper>

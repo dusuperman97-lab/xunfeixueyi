@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.MemberPointsMapper">
+
+    <!-- 新增用户积分记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.MemberPoints"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO member_points
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="totalPoints != null">total_points,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="totalPoints != null">#{totalPoints},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新用户积分记录 -->
+    <update id="updateById" parameterType="com.project.platform.entity.MemberPoints">
+        UPDATE member_points
+        <set>
+            <if test="totalPoints != null">
+                total_points = #{totalPoints},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 扣减积分（带行锁与余额校验，防止并发超扣） -->
+    <update id="deductPoints">
+        UPDATE member_points
+        SET total_points = total_points - #{points},
+            update_time = NOW()
+        WHERE user_id = #{userId}
+          AND total_points >= #{points}
+    </update>
+
+    <!-- 管理端：分页查询所有用户积分（从 student 表驱动，确保所有注册用户都显示） -->
+    <select id="selectAdminPage" resultType="com.project.platform.vo.MemberPointsVO">
+        SELECT
+            COALESCE(mp.id, 0) AS id,
+            s.id AS userId,
+            COALESCE(mp.total_points, 0) AS totalPoints,
+            mp.create_time AS createTime,
+            mp.update_time AS updateTime,
+            s.username,
+            s.student_no AS studentNo
+        FROM student s
+        LEFT JOIN member_points mp ON mp.user_id = s.id
+        <where>
+            <if test="username != null and username.trim() != ''">
+                AND s.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+        </where>
+        ORDER BY COALESCE(mp.update_time, s.create_time) DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 管理端：查询所有用户积分总数 -->
+    <select id="selectAdminCount" resultType="int">
+        SELECT COUNT(s.id)
+        FROM student s
+        LEFT JOIN member_points mp ON mp.user_id = s.id
+        <where>
+            <if test="username != null and username.trim() != ''">
+                AND s.username LIKE CONCAT('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

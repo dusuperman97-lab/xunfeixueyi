@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.ResourcePushMapper">
+
+    <sql id="Base_Column_List">
+        id, course_id, chapter_id, section_id,
+        resource_type, title, description, url, embed_url, cover_url,
+        source, duration, author, pages, journal, year, citations,
+        push_time, is_new, sort_order, created_at, updated_at
+    </sql>
+
+    <select id="queryPage" resultType="com.project.platform.entity.ResourcePush">
+        SELECT <include refid="Base_Column_List"/>
+        FROM resource_push
+        <where>
+            <if test="query.courseId != null">
+                AND course_id = #{query.courseId}
+            </if>
+            <if test="query.resourceType != null and query.resourceType != ''">
+                AND resource_type = #{query.resourceType}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND title LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+        ORDER BY push_time DESC, sort_order ASC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT COUNT(*) FROM resource_push
+        <where>
+            <if test="query.courseId != null">
+                AND course_id = #{query.courseId}
+            </if>
+            <if test="query.resourceType != null and query.resourceType != ''">
+                AND resource_type = #{query.resourceType}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND title LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO resource_push (
+            course_id, chapter_id, section_id,
+            resource_type, title, description, url, embed_url, cover_url,
+            source, duration, author, pages, journal, year, citations,
+            push_time, is_new, sort_order, created_at, updated_at
+        ) VALUES (
+            #{courseId}, #{chapterId}, #{sectionId},
+            #{resourceType}, #{title}, #{description}, #{url}, #{embedUrl}, #{coverUrl},
+            #{source}, #{duration}, #{author}, #{pages}, #{journal}, #{year}, #{citations},
+            #{pushTime}, #{isNew}, #{sortOrder}, #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <update id="updateById">
+        UPDATE resource_push
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="coverUrl != null">cover_url = #{coverUrl},</if>
+            <if test="isNew != null">is_new = #{isNew},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeByIds">
+        DELETE FROM resource_push WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

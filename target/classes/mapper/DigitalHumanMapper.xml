@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.DigitalHumanMapper">
+
+    <sql id="Base_Column_List">
+        id, digital_human_id, name, avatar_id, vcn, image_url, description, status, create_time
+    </sql>
+
+    <select id="queryPage" resultType="com.project.platform.entity.DigitalHuman">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM digital_human
+        <where>
+            <if test="query.name != null and query.name != ''">
+                AND name LIKE CONCAT('%', #{query.name}, '%')
+            </if>
+            <if test="query.digitalHumanId != null and query.digitalHumanId != ''">
+                AND digital_human_id = #{query.digitalHumanId}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT COUNT(*) FROM digital_human
+        <where>
+            <if test="query.name != null and query.name != ''">
+                AND name LIKE CONCAT('%', #{query.name}, '%')
+            </if>
+            <if test="query.digitalHumanId != null and query.digitalHumanId != ''">
+                AND digital_human_id = #{query.digitalHumanId}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO digital_human (digital_human_id, name, avatar_id, vcn, image_url, description, status, create_time)
+        VALUES (#{digitalHumanId}, #{name}, #{avatarId}, #{vcn}, #{imageUrl}, #{description}, #{status}, #{createTime})
+    </insert>
+
+    <update id="updateById">
+        UPDATE digital_human
+        <set>
+            <if test="digitalHumanId != null and digitalHumanId != ''">
+                digital_human_id = #{digitalHumanId},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="avatarId != null and avatarId != ''">
+                avatar_id = #{avatarId},
+            </if>
+            <if test="vcn != null and vcn != ''">
+                vcn = #{vcn},
+            </if>
+            <if test="imageUrl != null">
+                image_url = #{imageUrl},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeByIds">
+        DELETE FROM digital_human WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

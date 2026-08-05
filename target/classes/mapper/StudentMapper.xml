@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.StudentMapper">
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.project.platform.entity.Student">
+        SELECT
+        id,
+        student_no AS studentNo,
+        username,
+        password,
+        avatar_url AS avatarUrl,
+        tel,
+        email,
+        status,
+        is_registered AS isRegistered,
+        create_time AS createTime
+        FROM student
+        <include refid="queryConditions"/>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryCount" resultType="int">
+        SELECT COUNT(id)
+        FROM student
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 查询条件 -->
+    <sql id="queryConditions">
+        <where>
+            <if test="query.studentNo != null and query.studentNo.trim() != ''">
+                AND student_no LIKE CONCAT('%', #{query.studentNo}, '%')
+            </if>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.status != null and query.status.trim() != ''">
+                AND status = #{query.status}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 新增学生 -->
+    <insert id="insert" parameterType="com.project.platform.entity.Student"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentNo != null">student_no,</if>
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="avatarUrl != null">avatar_url,</if>
+
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="status != null">status,</if>
+            <if test="isRegistered != null">is_registered,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentNo != null">#{studentNo},</if>
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="status != null">#{status},</if>
+            <if test="isRegistered != null">#{isRegistered},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 根据 ID 更新 -->
+    <update id="updateById" parameterType="com.project.platform.entity.Student">
+        UPDATE student
+        <set>
+            <if test="studentNo != null">
+                student_no = #{studentNo},
+            </if>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="faceDescriptor != null">
+                face_descriptor = #{faceDescriptor},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="isRegistered != null">
+                is_registered = #{isRegistered},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 批量删除 -->
+    <delete id="removeByIds">
+        DELETE FROM student
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

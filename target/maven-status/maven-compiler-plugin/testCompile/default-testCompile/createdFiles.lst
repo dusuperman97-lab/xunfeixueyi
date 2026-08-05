@@ -1,0 +1,11 @@
+com\project\platform\service\course\CourseDigitalHumanContextServiceTest.class
+com\project\platform\ProjectManagementStartupTest.class
+com\project\platform\controller\profile\StudentProfileConversationControllerTest.class
+com\project\platform\agents\tools\KnowledgeSearchTool3Test$1.class
+com\project\platform\service\ProfileConversationServiceImplTest.class
+com\project\platform\agents\tools\KnowledgeSearchTool3Test$2.class
+com\project\platform\service\impl\LearningAssistantServiceImplTest.class
+com\project\platform\service\impl\ResourcePushServiceImplTest.class
+com\project\platform\agents\tools\KnowledgeSearchTool3Test.class
+com\project\platform\service\course\AvatarTicketServiceTest.class
+com\project\platform\controller\learning\LearningAssistantControllerTest.class

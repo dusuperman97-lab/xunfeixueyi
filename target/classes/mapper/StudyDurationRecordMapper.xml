@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.StudyDurationRecordMapper">
+
+    <!-- 查询学生近N天的学习时长统计 -->
+    <select id="getStudyDurationStats" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(study_date, '%Y-%m-%d') AS date,
+            COALESCE(SUM(duration_minutes), 0) AS duration
+        FROM study_duration_record
+        WHERE student_id = #{studentId}
+          AND study_date >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY study_date
+        ORDER BY study_date ASC
+    </select>
+
+    <!-- 查询学生近N天的总学习时长 -->
+    <select id="getTotalStudyDuration" resultType="java.lang.Integer">
+        SELECT COALESCE(SUM(duration_minutes), 0)
+        FROM study_duration_record
+        WHERE student_id = #{studentId}
+          AND study_date >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+    </select>
+
+    <!-- 查询学生指定课程近N天的学习时长统计（按日期汇总） -->
+    <select id="getStudyDurationStatsByCourse" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(study_date, '%Y-%m-%d') AS date,
+            COALESCE(SUM(duration_minutes), 0) AS duration
+        FROM study_duration_record
+        WHERE student_id = #{studentId}
+          AND course_id = #{courseId}
+          AND study_date >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY study_date
+        ORDER BY study_date ASC
+    </select>
+
+    <!-- 查询学生指定课程近N天的总学习时长 -->
+    <select id="getTotalStudyDurationByCourse" resultType="java.lang.Integer">
+        SELECT COALESCE(SUM(duration_minutes), 0)
+        FROM study_duration_record
+        WHERE student_id = #{studentId}
+          AND course_id = #{courseId}
+          AND study_date >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+    </select>
+
+    <!-- 查询学生近N天各课程的总学习时长 -->
+    <select id="getStudyDurationGroupByCourse" resultType="java.util.HashMap">
+        SELECT
+            sdr.course_id AS courseId,
+            c.course_name AS courseName,
+            COALESCE(SUM(sdr.duration_minutes), 0) AS totalMinutes
+        FROM study_duration_record sdr
+        LEFT JOIN course c ON sdr.course_id = c.id
+        WHERE sdr.student_id = #{studentId}
+          AND sdr.study_date >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY sdr.course_id, c.course_name
+        ORDER BY totalMinutes DESC
+    </select>
+
+    <!-- 插入学习时长记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.StudyDurationRecord"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO study_duration_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">student_id,</if>
+            <if test="courseId != null">course_id,</if>
+            <if test="studyDate != null">study_date,</if>
+            <if test="durationMinutes != null">duration_minutes,</if>
+            <if test="studyType != null">study_type,</if>
+            <if test="sectionId != null">section_id,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">#{studentId},</if>
+            <if test="courseId != null">#{courseId},</if>
+            <if test="studyDate != null">#{studyDate},</if>
+            <if test="durationMinutes != null">#{durationMinutes},</if>
+            <if test="studyType != null">#{studyType},</if>
+            <if test="sectionId != null">#{sectionId},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新学习时长记录 -->
+    <update id="updateById" parameterType="com.project.platform.entity.StudyDurationRecord">
+        UPDATE study_duration_record
+        <set>
+            <if test="durationMinutes != null">
+                duration_minutes = #{durationMinutes},
+            </if>
+            <if test="studyType != null">
+                study_type = #{studyType},
+            </if>
+            <if test="courseId != null">
+                course_id = #{courseId},
+            </if>
+            <if test="sectionId != null">
+                section_id = #{sectionId},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据学生ID和日期查询记录 -->
+    <select id="selectByStudentAndDate" resultType="com.project.platform.entity.StudyDurationRecord">
+        SELECT * FROM study_duration_record
+        WHERE student_id = #{studentId}
+          AND study_date = #{studyDate}
+        LIMIT 1
+    </select>
+
+    <!-- 根据学生ID、课程ID和日期查询记录 -->
+    <select id="selectByStudentCourseAndDate" resultType="com.project.platform.entity.StudyDurationRecord">
+        SELECT * FROM study_duration_record
+        WHERE student_id = #{studentId}
+          AND course_id = #{courseId}
+          AND study_date = #{studyDate}
+        LIMIT 1
+    </select>
+
+</mapper>

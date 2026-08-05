@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.CourseWorkflowResourceMapper">
+
+    <resultMap id="BaseResultMap" type="com.project.platform.entity.CourseWorkflowResource">
+        <id column="id" property="id"/>
+        <result column="task_id" property="taskId"/>
+        <result column="stage_id" property="stageId"/>
+        <result column="kind" property="kind"/>
+        <result column="title" property="title"/>
+        <result column="url" property="url"/>
+        <result column="source" property="source"/>
+        <result column="snippet" property="snippet"/>
+        <result column="credibility_label" property="credibilityLabel"/>
+        <result column="score" property="score"/>
+        <result column="note" property="note"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.project.platform.entity.CourseWorkflowResource" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course_workflow_resource (task_id, stage_id, kind, title, url, source,
+            snippet, credibility_label, score, note, created_at)
+        VALUES (#{taskId}, #{stageId}, #{kind}, #{title}, #{url}, #{source},
+            #{snippet}, #{credibilityLabel}, #{score}, #{note}, #{createdAt})
+    </insert>
+
+    <update id="updateByUrl" parameterType="com.project.platform.entity.CourseWorkflowResource">
+        UPDATE course_workflow_resource
+        <set>
+            <if test="credibilityLabel != null">credibility_label = #{credibilityLabel},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="note != null">note = #{note},</if>
+            <if test="snippet != null">snippet = #{snippet},</if>
+        </set>
+        WHERE task_id = #{taskId} AND url = #{url}
+    </update>
+
+    <select id="selectByTaskId" resultMap="BaseResultMap">
+        SELECT * FROM course_workflow_resource WHERE task_id = #{taskId} ORDER BY created_at DESC
+    </select>
+
+    <delete id="deleteByTaskIdAndUrl">
+        DELETE FROM course_workflow_resource WHERE task_id = #{taskId} AND url = #{url}
+    </delete>
+
+</mapper>

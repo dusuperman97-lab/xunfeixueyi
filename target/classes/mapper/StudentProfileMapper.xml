@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.platform.mapper.StudentProfileMapper">
+
+    <!-- 插入画像记录 -->
+    <insert id="insert" parameterType="com.project.platform.entity.StudentProfile"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student_profile
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">student_id,</if>
+            <if test="username != null">username,</if>
+            <if test="nickname != null">nickname,</if>
+            <if test="email != null">email,</if>
+            <if test="major != null">major,</if>
+            <if test="grade != null">grade,</if>
+            <if test="learningGoal != null">learning_goal,</if>
+            <if test="learningStyle != null">learning_style,</if>
+            <if test="weaknessPoints != null">weakness_points,</if>
+            <if test="preferredStyle != null">preferred_style,</if>
+            <if test="conceptClarity != null">concept_clarity,</if>
+            <if test="memoryStability != null">memory_stability,</if>
+            <if test="transferAbility != null">transfer_ability,</if>
+            <if test="structuralIntegrity != null">structural_integrity,</if>
+            <if test="knowledgeDepth != null">knowledge_depth,</if>
+            <if test="informationProcessing != null">information_processing,</if>
+            <if test="knowledgeRepresentation != null">knowledge_representation,</if>
+            <if test="learningInitiative != null">learning_initiative,</if>
+            <if test="cognitiveControl != null">cognitive_control,</if>
+            <if test="practiceOrientation != null">practice_orientation,</if>
+            <if test="taskManagement != null">task_management,</if>
+            <if test="cognitiveStyleSummary != null">cognitive_style_summary,</if>
+            <if test="weeklyStudyData != null">weekly_study_data,</if>
+            <if test="avgDailyStudyMinutes != null">avg_daily_study_minutes,</if>
+            <if test="avgConcentration != null">avg_concentration,</if>
+            <if test="errorPreferences != null">error_preferences,</if>
+            <if test="errorTypeCount != null">error_type_count,</if>
+            <if test="highFrequencyErrorCount != null">high_frequency_error_count,</if>
+            <if test="avgErrorRate != null">avg_error_rate,</if>
+            <if test="textPreference != null">text_preference,</if>
+            <if test="imagePreference != null">image_preference,</if>
+            <if test="examplePreference != null">example_preference,</if>
+            <if test="videoPreference != null">video_preference,</if>
+            <if test="subjectInterests != null">subject_interests,</if>
+            <if test="interestSummary != null">interest_summary,</if>
+            <if test="recommendedPath != null">recommended_path,</if>
+            <if test="version != null">version,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="studentId != null">#{studentId},</if>
+            <if test="username != null">#{username},</if>
+            <if test="nickname != null">#{nickname},</if>
+            <if test="email != null">#{email},</if>
+            <if test="major != null">#{major},</if>
+            <if test="grade != null">#{grade},</if>
+            <if test="learningGoal != null">#{learningGoal},</if>
+            <if test="learningStyle != null">#{learningStyle},</if>
+            <if test="weaknessPoints != null">#{weaknessPoints},</if>
+            <if test="preferredStyle != null">#{preferredStyle},</if>
+            <if test="conceptClarity != null">#{conceptClarity},</if>
+            <if test="memoryStability != null">#{memoryStability},</if>
+            <if test="transferAbility != null">#{transferAbility},</if>
+            <if test="structuralIntegrity != null">#{structuralIntegrity},</if>
+            <if test="knowledgeDepth != null">#{knowledgeDepth},</if>
+            <if test="informationProcessing != null">#{informationProcessing},</if>
+            <if test="knowledgeRepresentation != null">#{knowledgeRepresentation},</if>
+            <if test="learningInitiative != null">#{learningInitiative},</if>
+            <if test="cognitiveControl != null">#{cognitiveControl},</if>
+            <if test="practiceOrientation != null">#{practiceOrientation},</if>
+            <if test="taskManagement != null">#{taskManagement},</if>
+            <if test="cognitiveStyleSummary != null">#{cognitiveStyleSummary},</if>
+            <if test="weeklyStudyData != null">#{weeklyStudyData},</if>
+            <if test="avgDailyStudyMinutes != null">#{avgDailyStudyMinutes},</if>
+            <if test="avgConcentration != null">#{avgConcentration},</if>
+            <if test="errorPreferences != null">#{errorPreferences},</if>
+            <if test="errorTypeCount != null">#{errorTypeCount},</if>
+            <if test="highFrequencyErrorCount != null">#{highFrequencyErrorCount},</if>
+            <if test="avgErrorRate != null">#{avgErrorRate},</if>
+            <if test="textPreference != null">#{textPreference},</if>
+            <if test="imagePreference != null">#{imagePreference},</if>
+            <if test="examplePreference != null">#{examplePreference},</if>
+            <if test="videoPreference != null">#{videoPreference},</if>
+            <if test="subjectInterests != null">#{subjectInterests},</if>
+            <if test="interestSummary != null">#{interestSummary},</if>
+            <if test="recommendedPath != null">#{recommendedPath},</if>
+            <if test="version != null">#{version},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 更新画像记录 -->
+    <update id="updateById" parameterType="com.project.platform.entity.StudentProfile">
+        UPDATE student_profile
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="major != null">
+                major = #{major},
+            </if>
+            <if test="grade != null">
+                grade = #{grade},
+            </if>
+            <if test="learningGoal != null">
+                learning_goal = #{learningGoal},
+            </if>
+            <if test="learningStyle != null">
+                learning_style = #{learningStyle},
+            </if>
+            <if test="weaknessPoints != null">
+                weakness_points = #{weaknessPoints},
+            </if>
+            <if test="preferredStyle != null">
+                preferred_style = #{preferredStyle},
+            </if>
+            <if test="conceptClarity != null">
+                concept_clarity = #{conceptClarity},
+            </if>
+            <if test="memoryStability != null">
+                memory_stability = #{memoryStability},
+            </if>
+            <if test="transferAbility != null">
+                transfer_ability = #{transferAbility},
+            </if>
+            <if test="structuralIntegrity != null">
+                structural_integrity = #{structuralIntegrity},
+            </if>
+            <if test="knowledgeDepth != null">
+                knowledge_depth = #{knowledgeDepth},
+            </if>
+            <if test="informationProcessing != null">
+                information_processing = #{informationProcessing},
+            </if>
+            <if test="knowledgeRepresentation != null">
+                knowledge_representation = #{knowledgeRepresentation},
+            </if>
+            <if test="learningInitiative != null">
+                learning_initiative = #{learningInitiative},
+            </if>
+            <if test="cognitiveControl != null">
+                cognitive_control = #{cognitiveControl},
+            </if>
+            <if test="practiceOrientation != null">
+                practice_orientation = #{practiceOrientation},
+            </if>
+            <if test="taskManagement != null">
+                task_management = #{taskManagement},
+            </if>
+            <if test="cognitiveStyleSummary != null">
+                cognitive_style_summary = #{cognitiveStyleSummary},
+            </if>
+            <if test="weeklyStudyData != null">
+                weekly_study_data = #{weeklyStudyData},
+            </if>
+            <if test="avgDailyStudyMinutes != null">
+                avg_daily_study_minutes = #{avgDailyStudyMinutes},
+            </if>
+            <if test="avgConcentration != null">
+                avg_concentration = #{avgConcentration},
+            </if>
+            <if test="errorPreferences != null">
+                error_preferences = #{errorPreferences},
+            </if>
+            <if test="errorTypeCount != null">
+                error_type_count = #{errorTypeCount},
+            </if>
+            <if test="highFrequencyErrorCount != null">
+                high_frequency_error_count = #{highFrequencyErrorCount},
+            </if>
+            <if test="avgErrorRate != null">
+                avg_error_rate = #{avgErrorRate},
+            </if>
+            <if test="textPreference != null">
+                text_preference = #{textPreference},
+            </if>
+            <if test="imagePreference != null">
+                image_preference = #{imagePreference},
+            </if>
+            <if test="examplePreference != null">
+                example_preference = #{examplePreference},
+            </if>
+            <if test="videoPreference != null">
+                video_preference = #{videoPreference},
+            </if>
+            <if test="subjectInterests != null">
+                subject_interests = #{subjectInterests},
+            </if>
+            <if test="interestSummary != null">
+                interest_summary = #{interestSummary},
+            </if>
+            <if test="recommendedPath != null">
+                recommended_path = #{recommendedPath},
+            </if>
+            <if test="version != null">
+                version = #{version},
+            </if>
+            update_time = NOW(),
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除画像记录 -->
+    <delete id="deleteByStudentId">
+        DELETE FROM student_profile WHERE student_id = #{studentId}
+    </delete>
+
+</mapper>
